@@ -1,0 +1,27 @@
+---
+- name: Home task #2
+  become: yes
+  hosts: all
+
+  tasks:
+    - name: httpd is deleted
+      yum:
+        name: httpd
+        state: absent
+
+    - name: index file deleted
+      file:
+        path: "/var/www/html/index.html"
+        state: absent
+
+    - name: http serivce is disabled
+      firewalld:
+        service: http
+        permanent: yes
+        state: disabled
+
+    - name: https service is disabled
+      firewalld:
+        service: https
+        permanent: yes
+        state: disabled

@@ -1,0 +1,33 @@
+---
+- name: Home task #1
+  become: yes
+  hosts: all
+
+  tasks:
+    - name: httpd is installed
+      yum:
+        name: httpd
+        state: present
+
+    - name: httpd is started and enabled
+      systemd:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: index file created
+      copy:
+        dest: "/var/www/html/index.html"
+        content: Welcome to my web server
+
+    - name: http serivce is enabled
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+
+    - name: https service is enabled
+      firewalld:
+        service: https
+        permanent: yes
+        state: enabled

@@ -1,0 +1,27 @@
+---
+- name: Home task #3
+  become: yes
+  hosts: all
+
+  tasks:
+    - name: First param is added
+      lineinfile:
+        state: present
+        path: /etc/default/grub
+        backrefs: yes
+        regexp: '^(GRUB_CMDLINE_LINUX=(?!.*net.ifnames)\"[^\"]+)(\".*)'
+        line: '\1 net.ifnames=0\2'
+      register: first_param
+
+    - name: Second param is added
+      lineinfile:
+        state: present
+        path: /etc/default/grub
+        backrefs: yes
+        regexp: '^(GRUB_CMDLINE_LINUX=(?!.*biosdevname)\"[^\"]+)(\".*)'
+        line: '\1 biosdevname=0\2'
+      register: second_param
+        
+    - name: Grub config commited
+      shell: grub2-mkconfig
+      when: first_param.changed or second_param.changed
