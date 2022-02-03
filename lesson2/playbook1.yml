@@ -1,0 +1,21 @@
+---
+- name: Home task #2
+  hosts: all
+  become: yes
+  vars:
+    users:
+      Alice:
+        passwd: "$6$MhGadKNZNZU/Fx5a$RaDJ21U5T3PqSBRY1pvOsnWFSMzX.CGBghI.S1y1o6Jt7uU376AHS0Fm2wFUfsv0yOtDJ38s5xolBzTZSUDES0"
+      Bob:
+        passwd: "$6$rb3uwWeO8NC/7fkg$UVJdD4hDHLKNUIwzvt.Pf1QAqaxoPlah4Fn8dAG11ak9bsoZRsM5/mLfUWdhtZDc7ud9oUnnkPMG8H81t23ck."
+      Carol:
+        passwd: "$6$EoMMScJ48p8JQZte$LmMu0iE4Nrrep7h764YLUcJzFfyVJF4rfpanXc5bG3hyLhQlQ.GYaMjO9/AUGUcmJ/3jjdaHAiaAFfHcn.25r0"
+
+  tasks:
+    - name: Create users
+      user:
+        name: "{{ item.key }}"
+        comment: "{{ item.key }}@example.com"
+        password: "{{ item.value.passwd }}"
+        create_home: yes
+      loop: "{{ users | dict2items }}"
