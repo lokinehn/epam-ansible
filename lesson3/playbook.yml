@@ -1,0 +1,7 @@
+---
+- name: playbook for home task #3
+  become: yes
+  hosts: all
+  roles:
+    - httpd
+    - vsftpd

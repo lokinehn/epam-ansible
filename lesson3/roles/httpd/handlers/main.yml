@@ -1,0 +1,10 @@
+---
+- name: httpd reload
+  service:
+    name: httpd
+    state: reloaded
+
+- name: firewalld reload
+  service:
+    name: firewalld
+    state: reloaded

@@ -1,0 +1,5 @@
+---
+anon_dir: "/var/ftp/pub"
+anon_upload_dir: "/var/ftp/pub/upload"
+anon_dir_mode: "2775"
+anon_upload_dir_mode: "3773"

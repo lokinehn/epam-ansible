@@ -1,0 +1,68 @@
+---
+- name: Install vsftpd
+  yum:
+    name: vsftpd
+    state: present
+    update_cache: yes
+  when: ansible_distribution == 'CentOS'
+
+#- name: Start vsftpd
+#  systemd:
+#    name: vsftpd
+#    state: "{{ vsftpd_state }}"
+#    enabled: yes
+
+- name: Allow ftp service
+  firewalld:
+    service: ftp
+    permanent: yes
+    state: enabled
+  notify: firewalld reload
+
+- name: Create anon root dir
+  file:
+    path: "{{ anon_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "{{ anon_dir_mode }}"
+
+- name: Create anon upload dir
+  file:
+    path: "{{ anon_upload_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "{{ anon_upload_dir_mode }}"
+
+- name: Copy vsftpd config file
+  template:
+    src: vsftpd.conf.j2
+    dest: /etc/vsftpd/vsftpd.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: vsftpd restart
+
+- name: Install related selinux packages
+  yum:
+    name:
+      - python3-libsemanage
+      - policycoreutils-python-utils
+    state: present
+  when: ansible_distribution == 'CentOS'
+
+- name: Change selinux boolean for vsftpd
+  seboolean:
+    name: ftpd_anon_write
+    state: "{{ ftpd_anon_write_state }}"
+    persistent: yes
+    
+- name: Allow to modify files in upload dir
+  community.general.sefcontext:
+    target: "/var/ftp/pub(/.*)?"
+    setype: public_content_rw_t
+    state: present
+
+- name: Apply new selinux fcontext
+  shell: restorecon -irv /var/ftp/pub

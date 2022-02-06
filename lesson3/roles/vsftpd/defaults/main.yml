@@ -1,0 +1,12 @@
+---
+vsftpd_state: started
+
+ftpd_anon_write_state: yes
+
+#config vsftpd
+anonymous_enable: 'YES'
+local_enable: 'NO'
+anon_upload_enable: 'YES'
+anon_root: '/var/ftp/pub'
+listen: 'YES'
+write_enable: 'YES'
